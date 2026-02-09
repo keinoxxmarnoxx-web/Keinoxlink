@@ -1,79 +1,121 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BANGKEI 🔫 | MOD DISTRIBUTION</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@400;600&display=swap');
         :root { --primary: #ff9d00; --bg: #0a0a0a; --card: rgba(21, 21, 21, 0.9); --text: #ffffff; }
-        body { background-color: var(--bg); color: var(--text); font-family: 'Poppins', sans-serif; margin: 0; display: flex; justify-content: center; padding: 40px 10px; min-height: 100vh; background-size: cover; background-position: center; background-attachment: fixed; }
+        
+        /* FIX TOTAL POSISI TENGAH & ANTI MIRING */
+        body { background-color: var(--bg); color: var(--text); font-family: 'Poppins', sans-serif; margin: 0; display: flex; justify-content: center; padding: 40px 10px; min-height: 100vh; background-size: cover; background-position: center; background-attachment: fixed; overflow-x: hidden; }
         .wrapper { width: 100%; max-width: 500px; text-align: center; padding-bottom: 100px; position: relative; }
-        .help-btn { position: absolute; top: -20px; right: 10px; color: var(--primary); font-size: 1.5rem; cursor: pointer; z-index: 100; }
+        
         .profile-pic { width: 110px; height: 110px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; margin-bottom: 10px; box-shadow: 0 0 15px var(--primary); }
         .profile-header h1 { font-family: 'Oswald', sans-serif; font-size: 3rem; color: var(--primary); margin: 5px 0; text-shadow: 3px 3px #000; }
+        
+        /* SOCIAL & COUNTER */
+        .social-icons { display: flex; justify-content: center; gap: 18px; margin-bottom: 10px; }
+        .social-icons a { color: var(--text); font-size: 1.4rem; transition: 0.3s; }
         .visitor-counter { font-size: 0.75rem; color: #fff; background: rgba(0,0,0,0.8); display: inline-flex; align-items: center; gap: 8px; padding: 5px 15px; border-radius: 50px; margin-bottom: 20px; border: 1px solid var(--primary); }
+        
+        /* SEARCH & TAB */
         .search-box input { background: rgba(0,0,0,0.8); border: 1px solid var(--primary); color: white; padding: 12px; border-radius: 8px; width: 90%; outline: none; }
-        .category-tab { display: flex; justify-content: space-around; background: var(--card); padding: 8px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #444; overflow-x: auto; }
-        .tab-btn { background: none; border: none; color: #bbb; font-weight: bold; cursor: pointer; font-family: 'Oswald', sans-serif; font-size: 0.8rem; white-space: nowrap; padding: 5px 15px; }
+        .category-tab { display: flex; justify-content: space-around; background: var(--card); padding: 8px; border-radius: 8px; margin: 20px 0; border: 1px solid #444; overflow-x: auto; }
+        .tab-btn { background: none; border: none; color: #bbb; font-weight: bold; cursor: pointer; font-family: 'Oswald', sans-serif; font-size: 0.8rem; padding: 8px 15px; white-space: nowrap; }
         .tab-btn.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+
+        /* MOD LIST */
         .link-container { display: flex; flex-direction: column; gap: 12px; }
-        .mod-card { background: var(--card); border-left: 4px solid var(--primary); padding: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px; border-radius: 8px; }
-        .mod-img-preview { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid #444; }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
-        .modal-box { background: #111; padding: 25px; border: 2px solid var(--primary); width: 100%; max-width: 350px; text-align: center; border-radius: 15px; }
-        #admin-panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; padding: 20px; flex-direction: column; align-items: center; overflow-y: auto; }
+        .mod-card { background: var(--card); border-left: 4px solid var(--primary); padding: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px; border-radius: 8px; transition: 0.2s; }
+        .mod-img-preview { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid #444; background: #222; }
+        .mod-info { flex: 1; text-align: left; }
+        .mod-info strong { font-size: 0.95rem; text-transform: uppercase; color: white; display: block; }
+        .mod-info small { font-size: 0.7rem; color: #ccc; }
+
+        /* POPUP FIX - BENERAN DI TENGAH */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(5px); }
+        .modal-box { background: #111; padding: 25px; border: 2px solid var(--primary); width: 100%; max-width: 350px; text-align: center; border-radius: 15px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        
+        /* ADMIN PANEL FULL (TAMPILAN, MODS, MEDIA) */
+        #admin-panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20000; padding: 20px; flex-direction: column; align-items: center; overflow-y: auto; }
         .admin-box { width: 100%; max-width: 400px; background: #111; border: 1px solid var(--primary); padding: 20px; border-radius: 15px; }
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: var(--primary); border-radius: 8px; box-sizing: border-box; }
-        .admin-btn { width: 100%; padding: 12px; background: var(--primary); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 5px; color: #000; }
-        .footer { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.9); color: #aaa; font-size: 0.75rem; padding: 12px 0; text-align: center; }
+        .admin-nav { display: flex; gap: 5px; margin-bottom: 15px; }
+        .nav-btn { flex: 1; background: #222; color: #fff; border: none; padding: 10px; font-size: 0.7rem; cursor: pointer; border-radius: 5px; font-family: 'Oswald'; }
+        .nav-btn.active { background: var(--primary); color: #000; }
+        
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: var(--primary); border-radius: 8px; box-sizing: border-box; font-family: 'Poppins'; }
+        .admin-btn { width: 100%; padding: 12px; background: var(--primary); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 5px; color: #000; text-transform: uppercase; }
+        
+        .footer { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.9); color: #aaa; font-size: 0.75rem; padding: 12px 0; text-align: center; z-index: 999; border-top: 1px solid #333; }
+        .help-btn { position: absolute; top: -20px; right: 10px; color: var(--primary); font-size: 1.5rem; cursor: pointer; }
     </style>
 </head>
 <body id="body-bg">
 
 <script>
-    // FUNGSI HARUS DI ATAS AGAR TIDAK ERROR "NOT DEFINED"
+    // DATA & ENGINE (LENGKAP TIDAK DIPOTONG)
     var currentTab = "Monetloader";
     var sheetData = [];
-    var db = JSON.parse(localStorage.getItem('bangkei_v14_final')) || {
+    var tempDl = { url: "", pass: "" };
+    var db = JSON.parse(localStorage.getItem('bangkei_v15_final')) || {
         bg: "https://i.postimg.cc/Vvk89HGm/3ff71d480e24ec7af86d74812e609089.jpg",
         photo: "https://i.postimg.cc/QNvrRVw0/20260208-193044.jpg",
         adImg: "https://i.postimg.cc/Vvk89HGm/3ff71d480e24ec7af86d74812e609089.jpg",
-        adLink: "#", helpText: "Cari mod lalu download. Hubungi Keinox!",
+        adLink: "#", helpText: "Cari mod, klik download. Hubungi Keinox di Discord.",
         name: "BANGKEI", tag: "nih link nya kalo mau donlot",
         theme: "#ff9d00", visitors: 0, sosmed: { yt: "#", tt: "#", dc: "#", sw: "#" }, mods: []
     };
 
-    function save() { localStorage.setItem('bangkei_v14_final', JSON.stringify(db)); }
+    function save() { localStorage.setItem('bangkei_v15_final', JSON.stringify(db)); }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     
     function render() {
         document.documentElement.style.setProperty('--primary', db.theme);
         document.getElementById('body-bg').style.backgroundImage = "url('" + db.bg + "')";
         document.getElementById('main-photo').src = db.photo;
-        document.getElementById('ad-img').src = db.adImg;
-        document.getElementById('web-name').innerText = db.name;
-        document.getElementById('web-tag').innerText = db.tag;
-        document.getElementById('count-display').innerText = db.visitors;
+        document.getElementById('ad-img-el').src = db.adImg;
+        document.getElementById('web-name-el').innerText = db.name;
+        document.getElementById('web-tag-el').innerText = db.tag;
+        document.getElementById('count-el').innerText = db.visitors;
         
-        // Buat link di bantuan bisa ditekan
-        var linkedHelp = db.helpText.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:var(--primary)">$1</a>');
+        var linkedHelp = db.helpText.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:var(--primary);text-decoration:underline;">$1</a>');
         document.getElementById('help-content').innerHTML = linkedHelp.replace(/\n/g, '<br>');
 
-        var container = document.getElementById('links-display');
+        document.getElementById('sosmed-el').innerHTML = `
+            <a href="${db.sosmed.yt}"><i class="fab fa-youtube"></i></a>
+            <a href="${db.sosmed.tt}"><i class="fab fa-tiktok"></i></a>
+            <a href="${db.sosmed.dc}"><i class="fab fa-discord"></i></a>
+            <a href="${db.sosmed.sw}"><i class="fas fa-donate"></i></a>`;
+
+        var container = document.getElementById('mod-list-el');
         container.innerHTML = "";
-        var allMods = [...db.mods, ...sheetData];
-        var filtered = allMods.filter(m => m.category === currentTab);
+        var query = document.getElementById('searchInput').value.toLowerCase();
+        var combined = [...db.mods, ...sheetData];
+        var filtered = combined.filter(m => m.category === currentTab && m.name.toLowerCase().includes(query));
         
         filtered.forEach(m => {
-            container.innerHTML += `<div class="mod-card" onclick="window.open('${m.url}','_blank')">
-                <img src="${m.img || ''}" class="mod-img-preview">
-                <div style="text-align:left;flex:1;"><strong>${m.name}</strong><br><small>${m.desc || ''}</small></div>
-                <i class="fas fa-download"></i>
+            container.innerHTML += `<div class="mod-card" onclick="openDl('${m.name}','${m.url}','${m.pass||""}')">
+                <img src="${m.img || ''}" class="mod-img-preview" onerror="this.src='https://via.placeholder.com/60?text=IMG'">
+                <div class="mod-info"><strong>${m.name}</strong><small>${m.desc || m.category}</small></div>
+                <i class="fas fa-download" style="color:var(--primary)"></i>
             </div>`;
         });
+
+        // Admin Mod List
+        var adminList = document.getElementById('admin-mod-list');
+        if(adminList) {
+            adminList.innerHTML = "";
+            db.mods.forEach((m, i) => {
+                adminList.innerHTML += `<div style="display:flex;justify-content:space-between;padding:8px;background:#222;margin-top:5px;border-radius:5px;font-size:0.7rem;">
+                    <span>${m.name}</span><span style="color:red;cursor:pointer;" onclick="delMod(${i})">HAPUS</span>
+                </div>`;
+            });
+        }
     }
 
     function switchTab(cat, btn) {
@@ -84,32 +126,104 @@
     }
 
     function checkPass() {
-        if(document.getElementById('pass-in').value === "210213") {
+        if(document.getElementById('admin-pass').value === "210213") {
             closeModal('login-popup');
             document.getElementById('admin-panel').style.display = 'flex';
-        } else { alert("Salah!"); }
+            loadAdmin();
+        } else { alert("PASSWORD SALAH!"); }
     }
 
-    function saveAdmin() {
+    function loadAdmin() {
+        document.getElementById('in-bg').value = db.bg;
+        document.getElementById('in-photo').value = db.photo;
+        document.getElementById('in-ad-img').value = db.adImg;
+        document.getElementById('in-ad-link').value = db.adLink;
+        document.getElementById('in-help').value = db.helpText;
+        document.getElementById('in-name').value = db.name;
+        document.getElementById('in-tag').value = db.tag;
+        document.getElementById('in-theme').value = db.theme;
+        document.getElementById('in-yt').value = db.sosmed.yt;
+        document.getElementById('in-tt').value = db.sosmed.tt;
+        document.getElementById('in-dc').value = db.sosmed.dc;
+        document.getElementById('in-sw').value = db.sosmed.sw;
+    }
+
+    function saveTampilan() {
+        db.bg = document.getElementById('in-bg').value;
         db.photo = document.getElementById('in-photo').value;
         db.adImg = document.getElementById('in-ad-img').value;
         db.adLink = document.getElementById('in-ad-link').value;
         db.helpText = document.getElementById('in-help').value;
-        save(); render(); alert("Tersimpan!");
+        db.name = document.getElementById('in-name').value;
+        db.tag = document.getElementById('in-tag').value;
+        db.theme = document.getElementById('in-theme').value;
+        save(); render(); alert("TAMPILAN DISIMPAN!");
+    }
+
+    function saveMedia() {
+        db.sosmed.yt = document.getElementById('in-yt').value;
+        db.sosmed.tt = document.getElementById('in-tt').value;
+        db.sosmed.dc = document.getElementById('in-dc').value;
+        db.sosmed.sw = document.getElementById('in-sw').value;
+        save(); render(); alert("SOSMED DISIMPAN!");
+    }
+
+    function addMod() {
+        var n = document.getElementById('m-name').value, u = document.getElementById('m-url').value;
+        if(n && u) {
+            db.mods.push({
+                name: n, url: u, category: document.getElementById('m-cat').value,
+                img: document.getElementById('m-img').value, pass: document.getElementById('m-pass').value,
+                desc: document.getElementById('m-desc').value
+            });
+            save(); render(); alert("MOD DITAMBAHKAN!");
+        }
+    }
+
+    function delMod(i) { db.mods.splice(i, 1); save(); render(); }
+    
+    function openDl(name, url, pass) { 
+        tempDl = { url: url, pass: pass }; 
+        document.getElementById('dl-mod-name').innerText = name; 
+        document.getElementById('dl-popup').style.display = 'flex'; 
+    }
+    
+    function verifyDl() {
+        if(document.getElementById('dl-pass-in').value === tempDl.pass || !tempDl.pass) {
+            window.open(tempDl.url, '_blank');
+            closeModal('dl-popup');
+            document.getElementById('dl-pass-in').value = "";
+        } else { alert("PASSWORD SALAH!"); }
+    }
+
+    function showSet(id, btn) {
+        document.querySelectorAll('.set-box').forEach(b => b.style.display = 'none');
+        document.getElementById('set-' + id).style.display = 'block';
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    // AUTO-UPDATE SHEETS TANPA CACHE
+    function fetchSheets() {
+        var csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-WXy-au3TmKpigPhwRidm2sFr_MscMUwlJDGLDNfOv-0gmG7S4wXY866LPQkR4fvhzzfmyEeAHJdb/pub?output=csv&t=' + new Date().getTime();
+        Papa.parse('https://api.allorigins.win/raw?url=' + encodeURIComponent(csvUrl), {
+            download: true, header: true,
+            complete: function(res) {
+                if(res.data) {
+                    sheetData = res.data.map(m => ({
+                        name: m.Nama||m.name, url: m.Link||m.url, category: m.Category||m.category,
+                        desc: m.Deskripsi||m.desc, pass: m.Password||m.pass, img: m.Foto||m.img
+                    })).filter(m => m.name);
+                    render();
+                }
+            }
+        });
     }
 
     window.onload = function() {
-        if(!sessionStorage.getItem('v')) { db.visitors++; save(); sessionStorage.setItem('v', '1'); }
+        if(!sessionStorage.getItem('counted')) { db.visitors++; save(); sessionStorage.setItem('counted', '1'); }
         render();
-        // LINK SHEETS ABANG
-        var csv = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-WXy-au3TmKpigPhwRidm2sFr_MscMUwlJDGLDNfOv-0gmG7S4wXY866LPQkR4fvhzzfmyEeAHJdb/pub?output=csv';
-        Papa.parse(csv, {
-            download: true, header: true,
-            complete: function(res) {
-                sheetData = res.data.map(m => ({ name:m.Nama, url:m.Link, category:m.Category, img:m.Foto, desc:m.Deskripsi }));
-                render();
-            }
-        });
+        fetchSheets();
     };
 </script>
 
@@ -117,38 +231,59 @@
     <div class="help-btn" onclick="document.getElementById('help-popup').style.display='flex'"><i class="fas fa-question-circle"></i></div>
     <div class="profile-header">
         <img id="main-photo" src="" class="profile-pic">
-        <h1 id="web-name"></h1>
-        <p id="web-tag"></p>
+        <h1 id="web-name-el"></h1>
+        <p id="web-tag-el" style="font-size:0.8rem;color:#ccc;margin-bottom:15px;"></p>
     </div>
-    <div class="visitor-counter"><i class="fas fa-eye"></i> <span id="count-display">0</span> Visitor</div>
+    <div class="social-icons" id="sosmed-el"></div>
+    <div class="visitor-counter"><i class="fas fa-eye"></i> <span id="count-el">0</span> Visitor</div>
+    <div class="search-box"><input type="text" id="searchInput" placeholder="Cari nama mod..." onkeyup="render()"></div>
     <div class="category-tab">
         <button class="tab-btn active" onclick="switchTab('Monetloader', this)">MONET</button>
         <button class="tab-btn" onclick="switchTab('Cleo', this)">CLEO</button>
         <button class="tab-btn" onclick="switchTab('Modpack', this)">MODPACK</button>
+        <button class="tab-btn" onclick="switchTab('DC Kota', this)">DC KOTA</button>
     </div>
-    <div id="links-display" class="link-container"></div>
+    <div id="mod-list-el" class="link-container"></div>
 </div>
 
-<div id="login-popup" class="modal-overlay"><div class="modal-box"><h3>ADMIN</h3><input type="password" id="pass-in"><button class="admin-btn" onclick="checkPass()">LOGIN</button></div></div>
-<div id="help-popup" class="modal-overlay"><div class="modal-box"><h3>BANTUAN</h3><p id="help-content"></p><button class="admin-btn" onclick="closeModal('help-popup')">OKE</button></div></div>
-<div id="ad-popup" class="modal-overlay" style="display:flex;"><div class="modal-box">
-    <img id="ad-img" onclick="if(db.adLink!='#') window.open(db.adLink,'_blank')" style="width:100%; border-radius:10px; cursor:pointer;">
-    <button class="admin-btn" onclick="closeModal('ad-popup')">TUTUP IKLAN</button>
-</div></div>
+<div id="login-popup" class="modal-overlay"><div class="modal-box"><h3>OWNER LOGIN</h3><input type="password" id="admin-pass" placeholder="Password..."><button class="admin-btn" onclick="checkPass()">LOGIN</button><button class="admin-btn" style="background:#333;color:#fff;" onclick="closeModal('login-popup')">BATAL</button></div></div>
+<div id="ad-popup" class="modal-overlay" style="display:flex;"><div class="modal-box"><img id="ad-img-el" onclick="if(db.adLink!='#') window.open(db.adLink,'_blank')" style="width:100%;border-radius:10px;cursor:pointer;"><p style="font-size:0.6rem;color:#777;margin-top:5px;">Klik gambar untuk buka link</p><button class="admin-btn" style="margin-top:10px;" onclick="closeModal('ad-popup')">TUTUP IKLAN</button></div></div>
+<div id="help-popup" class="modal-overlay"><div class="modal-box"><h3>BANTUAN</h3><p id="help-content" style="font-size:0.8rem;text-align:left;line-height:1.6;"></p><button class="admin-btn" onclick="closeModal('help-popup')">OKE</button></div></div>
+<div id="dl-popup" class="modal-overlay"><div class="modal-box"><h3 id="dl-mod-name"></h3><input type="text" id="dl-pass-in" placeholder="Password Mod..."><button class="admin-btn" onclick="verifyDl()">DOWNLOAD</button><button class="admin-btn" style="background:#333;color:#fff;" onclick="closeModal('dl-popup')">BATAL</button></div></div>
 
 <div id="admin-panel">
     <div class="admin-box">
-        <h3>OWNER SETTING</h3>
-        <input type="text" id="in-photo" placeholder="Link Foto Profil (Direct Link)">
-        <input type="text" id="in-ad-img" placeholder="Link Foto Iklan">
-        <input type="text" id="in-ad-link" placeholder="Link Klik Iklan">
-        <textarea id="in-help" placeholder="Text Bantuan"></textarea>
-        <button class="admin-btn" onclick="saveAdmin()">SIMPAN</button>
-        <button class="admin-btn" style="background:#333;color:#fff;" onclick="closeModal('admin-panel')">KELUAR</button>
+        <h2 style="color:var(--primary);text-align:center;font-family:'Oswald';">OWNER PANEL</h2>
+        <div class="admin-nav">
+            <button class="nav-btn active" onclick="showSet('tampilan', this)">TAMPILAN</button>
+            <button class="nav-btn" onclick="showSet('mods', this)">MODS</button>
+            <button class="nav-btn" onclick="showSet('media', this)">MEDIA</button>
+        </div>
+        
+        <div id="set-tampilan" class="set-box">
+            <input type="text" id="in-bg" placeholder="Background URL"><input type="text" id="in-photo" placeholder="Profil URL">
+            <input type="text" id="in-ad-img" placeholder="Iklan Foto URL"><input type="text" id="in-ad-link" placeholder="Iklan Link (http://...)">
+            <textarea id="in-help" placeholder="Text Bantuan (Link otomatis aktif)" rows="4"></textarea>
+            <input type="text" id="in-name" placeholder="Nama Web"><input type="text" id="in-tag" placeholder="Tagline"><input type="color" id="in-theme">
+            <button class="admin-btn" onclick="saveTampilan()">SIMPAN TAMPILAN</button>
+        </div>
+        
+        <div id="set-mods" class="set-box" style="display:none;">
+            <select id="m-cat"><option value="Monetloader">Monetloader</option><option value="Cleo">Cleo</option><option value="Modpack">Modpack</option><option value="DC Kota">DC Kota</option></select>
+            <input type="text" id="m-name" placeholder="Nama Mod"><input type="text" id="m-img" placeholder="Foto Mod (URL)"><input type="text" id="m-url" placeholder="Link Download"><input type="text" id="m-pass" placeholder="Password"><textarea id="m-desc" placeholder="Deskripsi"></textarea>
+            <button class="admin-btn" onclick="addMod()">TAMBAHKAN MOD</button>
+            <div id="admin-mod-list"></div>
+        </div>
+        
+        <div id="set-media" class="set-box" style="display:none;">
+            <input type="text" id="in-yt" placeholder="YouTube URL"><input type="text" id="in-tt" placeholder="TikTok URL"><input type="text" id="in-dc" placeholder="Discord URL"><input type="text" id="in-sw" placeholder="Saweria URL">
+            <button class="admin-btn" onclick="saveMedia()">UPDATE SOSMED</button>
+        </div>
+        
+        <button class="admin-btn" style="background:#333;color:#fff;margin-top:20px;" onclick="closeModal('admin-panel')">TUTUP PANEL</button>
     </div>
 </div>
 
-<div class="footer">Made by <span onclick="document.getElementById('login-popup').style.display='flex'" style="color:var(--primary);cursor:pointer;">Keinox</span></div>
-
+<div class="footer">Made in 2026 | <span onclick="document.getElementById('login-popup').style.display='flex'" style="color:var(--primary);cursor:pointer;">Keinox</span></div>
 </body>
 </html>
