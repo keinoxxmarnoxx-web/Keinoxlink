@@ -14,10 +14,7 @@
         .help-btn { position: absolute; top: -20px; right: 10px; color: var(--primary); font-size: 1.5rem; cursor: pointer; z-index: 100; }
         .profile-pic { width: 110px; height: 110px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; margin-bottom: 10px; box-shadow: 0 0 15px var(--primary); }
         .profile-header h1 { font-family: 'Oswald', sans-serif; font-size: 3rem; color: var(--primary); margin: 5px 0; text-shadow: 3px 3px #000; }
-        .social-icons { display: flex; justify-content: center; gap: 18px; margin-bottom: 10px; }
-        .social-icons a { color: var(--text); font-size: 1.4rem; transition: 0.3s; }
         .visitor-counter { font-size: 0.75rem; color: #fff; background: rgba(0,0,0,0.8); display: inline-flex; align-items: center; gap: 8px; padding: 5px 15px; border-radius: 50px; margin-bottom: 20px; border: 1px solid var(--primary); }
-        .search-box { margin-bottom: 20px; }
         .search-box input { background: rgba(0,0,0,0.8); border: 1px solid var(--primary); color: white; padding: 12px; border-radius: 8px; width: 90%; outline: none; }
         .category-tab { display: flex; justify-content: space-around; background: var(--card); padding: 8px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #444; overflow-x: auto; }
         .tab-btn { background: none; border: none; color: #bbb; font-weight: bold; cursor: pointer; font-family: 'Oswald', sans-serif; font-size: 0.8rem; white-space: nowrap; padding: 5px 15px; }
@@ -25,222 +22,133 @@
         .link-container { display: flex; flex-direction: column; gap: 12px; }
         .mod-card { background: var(--card); border-left: 4px solid var(--primary); padding: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px; border-radius: 8px; }
         .mod-img-preview { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid #444; }
-        .mod-info { flex: 1; text-align: left; }
-        .mod-info strong { font-size: 0.95rem; text-transform: uppercase; color: white; display: block; }
-        .mod-desc-text { font-size: 0.7rem; color: #ccc; }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(5px); }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 5000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
         .modal-box { background: #111; padding: 25px; border: 2px solid var(--primary); width: 100%; max-width: 350px; text-align: center; border-radius: 15px; }
         #admin-panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; padding: 20px; flex-direction: column; align-items: center; overflow-y: auto; }
         .admin-box { width: 100%; max-width: 400px; background: #111; border: 1px solid var(--primary); padding: 20px; border-radius: 15px; }
-        .admin-nav { display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap; }
-        .nav-btn { flex: 1; background: #222; color: #fff; border: none; padding: 8px; font-size: 0.7rem; cursor: pointer; border-radius: 5px; }
-        .nav-btn.active { background: var(--primary); color: #000; }
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: var(--primary); border-radius: 8px; box-sizing: border-box; font-family: 'Poppins'; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #333; color: var(--primary); border-radius: 8px; box-sizing: border-box; }
         .admin-btn { width: 100%; padding: 12px; background: var(--primary); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 5px; color: #000; }
-        .footer { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.9); color: #aaa; font-size: 0.75rem; padding: 12px 0; text-align: center; z-index: 999; }
-        .admin-trigger { cursor: pointer; color: var(--primary); }
+        .footer { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.9); color: #aaa; font-size: 0.75rem; padding: 12px 0; text-align: center; }
     </style>
 </head>
 <body id="body-bg">
+
 <script>
+    // FUNGSI HARUS DI ATAS AGAR TIDAK ERROR "NOT DEFINED"
     var currentTab = "Monetloader";
     var sheetData = [];
-    var tempDl = { url: "", pass: "" };
     var db = JSON.parse(localStorage.getItem('bangkei_v14_final')) || {
         bg: "https://i.postimg.cc/Vvk89HGm/3ff71d480e24ec7af86d74812e609089.jpg",
         photo: "https://i.postimg.cc/QNvrRVw0/20260208-193044.jpg",
         adImg: "https://i.postimg.cc/Vvk89HGm/3ff71d480e24ec7af86d74812e609089.jpg",
-        adLink: "#", helpText: "Cari mod, klik download. Hubungi Keinox di Discord.",
+        adLink: "#", helpText: "Cari mod lalu download. Hubungi Keinox!",
         name: "BANGKEI", tag: "nih link nya kalo mau donlot",
         theme: "#ff9d00", visitors: 0, sosmed: { yt: "#", tt: "#", dc: "#", sw: "#" }, mods: []
     };
 
     function save() { localStorage.setItem('bangkei_v14_final', JSON.stringify(db)); }
-    function closeModal(id) { 
-        var el = document.getElementById(id);
-        if(el) el.style.display = 'none'; 
-    }
-    function myAlert(msg, isError) {
-        document.getElementById('alert-msg').innerText = msg;
-        var box = document.getElementById('alert-box');
-        if(box) box.style.borderColor = isError ? "#ff4444" : db.theme;
-        document.getElementById('custom-alert').style.display = 'flex';
-    }
-
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    
     function render() {
         document.documentElement.style.setProperty('--primary', db.theme);
         document.getElementById('body-bg').style.backgroundImage = "url('" + db.bg + "')";
         document.getElementById('main-photo').src = db.photo;
         document.getElementById('ad-img').src = db.adImg;
-        document.getElementById('web-name-display').innerText = db.name;
-        document.getElementById('web-tag-display').innerText = db.tag;
+        document.getElementById('web-name').innerText = db.name;
+        document.getElementById('web-tag').innerText = db.tag;
         document.getElementById('count-display').innerText = db.visitors;
         
-        // Linkify Help Text
-        var linkedText = db.helpText.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:var(--primary);text-decoration:underline;">$1</a>');
-        document.getElementById('help-text-content').innerHTML = linkedText.replace(/\n/g, '<br>');
-
-        var socialHtml = '<a href="' + db.sosmed.yt + '"><i class="fab fa-youtube"></i></a>' +
-                         '<a href="' + db.sosmed.tt + '"><i class="fab fa-tiktok"></i></a>' +
-                         '<a href="' + db.sosmed.dc + '"><i class="fab fa-discord"></i></a>' +
-                         '<a href="' + db.sosmed.sw + '"><i class="fas fa-donate"></i></a>';
-        document.getElementById('social-display').innerHTML = socialHtml;
+        // Buat link di bantuan bisa ditekan
+        var linkedHelp = db.helpText.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color:var(--primary)">$1</a>');
+        document.getElementById('help-content').innerHTML = linkedHelp.replace(/\n/g, '<br>');
 
         var container = document.getElementById('links-display');
-        var search = document.getElementById('searchInput').value.toLowerCase();
         container.innerHTML = "";
         var allMods = [...db.mods, ...sheetData];
-        var filtered = allMods.filter(m => m.category === currentTab && m.name.toLowerCase().includes(search));
+        var filtered = allMods.filter(m => m.category === currentTab);
         
         filtered.forEach(m => {
-            var img = m.img ? '<img src="'+m.img+'" class="mod-img-preview">' : '<div class="mod-img-preview" style="display:flex;align-items:center;justify-content:center;background:#222;"><i class="fas fa-box"></i></div>';
-            container.innerHTML += '<div class="mod-card" onclick="openDl(\''+m.name+'\',\''+m.url+'\',\''+(m.pass||"")+'\')">'+img+'<div class="mod-info"><strong>'+m.name+'</strong><span class="mod-desc-text">'+(m.desc||m.category)+'</span></div><i class="fas fa-download" style="color:var(--primary)"></i></div>';
+            container.innerHTML += `<div class="mod-card" onclick="window.open('${m.url}','_blank')">
+                <img src="${m.img || ''}" class="mod-img-preview">
+                <div style="text-align:left;flex:1;"><strong>${m.name}</strong><br><small>${m.desc || ''}</small></div>
+                <i class="fas fa-download"></i>
+            </div>`;
         });
-
-        var list = document.getElementById('admin-mod-list');
-        if(list) {
-            list.innerHTML = "";
-            db.mods.forEach((m, i) => {
-                list.innerHTML += '<div style="display:flex;justify-content:space-between;font-size:0.7rem;margin-top:5px;padding:8px;background:#222;border-radius:5px;"><span>'+m.name+'</span><span style="color:red;cursor:pointer;" onclick="delMod('+i+')">HAPUS</span></div>';
-            });
-        }
     }
 
     function switchTab(cat, btn) {
-        currentTab = (cat === "MONET" ? "Monetloader" : (cat === "CLEO" ? "Cleo" : (cat === "MODPACK" ? "Modpack" : "DC Kota")));
+        currentTab = cat;
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         render();
     }
 
     function checkPass() {
-        if(document.getElementById('admin-pass').value === "210213") {
+        if(document.getElementById('pass-in').value === "210213") {
             closeModal('login-popup');
             document.getElementById('admin-panel').style.display = 'flex';
-            loadAdminValues();
-        } else { myAlert("PASSWORD SALAH!", true); }
+        } else { alert("Salah!"); }
     }
 
-    function loadAdminValues() {
-        document.getElementById('in-bg-url').value = db.bg;
-        document.getElementById('in-photo-url').value = db.photo;
-        document.getElementById('in-ad-img').value = db.adImg;
-        document.getElementById('in-ad-link').value = db.adLink;
-        document.getElementById('in-help-text').value = db.helpText;
-        document.getElementById('in-web-name').value = db.name;
-        document.getElementById('in-web-tag').value = db.tag;
-        document.getElementById('in-theme-color').value = db.theme;
-        document.getElementById('in-yt').value = db.sosmed.yt;
-        document.getElementById('in-tt').value = db.sosmed.tt;
-        document.getElementById('in-dc').value = db.sosmed.dc;
-        document.getElementById('in-sw').value = db.sosmed.sw;
-    }
-
-    function saveTampilan() {
-        db.bg = document.getElementById('in-bg-url').value;
-        db.photo = document.getElementById('in-photo-url').value;
+    function saveAdmin() {
+        db.photo = document.getElementById('in-photo').value;
         db.adImg = document.getElementById('in-ad-img').value;
         db.adLink = document.getElementById('in-ad-link').value;
-        db.helpText = document.getElementById('in-help-text').value;
-        db.name = document.getElementById('in-web-name').value;
-        db.tag = document.getElementById('in-web-tag').value;
-        db.theme = document.getElementById('in-theme-color').value;
-        save(); render(); myAlert("DATA DISIMPAN!", false);
+        db.helpText = document.getElementById('in-help').value;
+        save(); render(); alert("Tersimpan!");
     }
 
-    function saveMedia() {
-        db.sosmed.yt = document.getElementById('in-yt').value;
-        db.sosmed.tt = document.getElementById('in-tt').value;
-        db.sosmed.dc = document.getElementById('in-dc').value;
-        db.sosmed.sw = document.getElementById('in-sw').value;
-        save(); render(); myAlert("SOSMED UPDATED!", false);
-    }
-
-    function addMod() {
-        var n = document.getElementById('mod-name').value, img = document.getElementById('mod-img').value, u = document.getElementById('mod-url').value, c = document.getElementById('mod-cat').value, p = document.getElementById('mod-pass').value, d = document.getElementById('mod-desc').value;
-        if(n && u) { db.mods.push({name:n, url:u, category:c, pass:p, desc:d, img:img}); save(); render(); myAlert("MOD DITAMBAH!", false); }
-    }
-
-    function delMod(i) { db.mods.splice(i, 1); save(); render(); }
-    function openDl(name, url, pass) { tempDl = { url: url, pass: pass }; document.getElementById('dl-mod-name').innerText = name; document.getElementById('dl-popup').style.display = 'flex'; }
-    function verifyAndDownload() {
-        var input = document.getElementById('dl-pass-input').value;
-        if(input === tempDl.pass || !tempDl.pass) { window.open(tempDl.url, '_blank'); closeModal('dl-popup'); document.getElementById('dl-pass-input').value = ""; }
-        else { myAlert("PASSWORD SALAH!", true); }
-    }
-    function showSet(id, btn) {
-        document.querySelectorAll('.set-box').forEach(b => b.style.display = 'none');
-        document.getElementById('set-' + id).style.display = 'block';
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-    }
-    function clickAd() { if(db.adLink && db.adLink !== "#") { window.open(db.adLink, '_blank'); } }
-</script>
-
-<div id="custom-alert" class="modal-overlay"><div id="alert-box" class="modal-box"><h3 style="color:var(--primary);font-family:'Oswald';">INFO</h3><p id="alert-msg" style="color:#eee;margin:15px 0;"></p><button class="admin-btn" onclick="closeModal('custom-alert')">OKE</button></div></div>
-<div id="login-popup" class="modal-overlay"><div class="modal-box"><h2 style="color:var(--primary);font-family:'Oswald';margin-bottom:15px;">LOGIN OWNER</h2><input type="password" id="admin-pass" placeholder="Password..."><button class="admin-btn" onclick="checkPass()">LOGIN</button><button class="admin-btn" style="background:#333;color:#fff;" onclick="closeModal('login-popup')">BATAL</button></div></div>
-<div id="ad-popup" class="modal-overlay" style="display:flex;"><div class="modal-box"><img id="ad-img" onclick="clickAd()" style="width:100%;border-radius:10px;border:1px solid var(--primary);cursor:pointer;"><p style="font-size:0.6rem;color:#777;margin-top:5px;">Klik gambar untuk buka link iklan</p><button class="admin-btn" style="margin-top:10px;" onclick="closeModal('ad-popup')">TUTUP IKLAN</button></div></div>
-<div id="help-popup" class="modal-overlay"><div class="modal-box"><h3 style="color:var(--primary);font-family:'Oswald';">BANTUAN</h3><p id="help-text-content" style="color:#eee;font-size:0.8rem;text-align:left;line-height:1.6;"></p><button class="admin-btn" onclick="closeModal('help-popup')">OKE</button></div></div>
-<div id="dl-popup" class="modal-overlay"><div class="modal-box"><h3 id="dl-mod-name" style="color:var(--primary);font-family:'Oswald';">MOD</h3><input type="text" id="dl-pass-input" placeholder="Password Mod..."><button class="admin-btn" onclick="verifyAndDownload()">DOWNLOAD</button><button class="admin-btn" style="background:#333;color:#fff;" onclick="closeModal('dl-popup')">BATAL</button></div></div>
-
-<div class="wrapper">
-    <div class="help-btn" onclick="document.getElementById('help-popup').style.display='flex'"><i class="fas fa-question-circle"></i></div>
-    <div class="profile-header"><img id="main-photo" src="" class="profile-pic"><h1 id="web-name-display">BANGKEI</h1><p id="web-tag-display" style="font-size:0.8rem;color:#ccc;margin-bottom:15px;"></p></div>
-    <div class="social-icons" id="social-display"></div>
-    <div class="visitor-counter"><i class="fas fa-eye"></i> <span><span id="count-display">0</span></span> Visitor</div>
-    <div class="search-box"><input type="text" id="searchInput" placeholder="Cari nama mod..." onkeyup="render()"></div>
-    <div class="category-tab">
-        <button class="tab-btn active" onclick="switchTab('MONET', this)">MONET</button>
-        <button class="tab-btn" onclick="switchTab('CLEO', this)">CLEO</button>
-        <button class="tab-btn" onclick="switchTab('MODPACK', this)">MODPACK</button>
-        <button class="tab-btn" onclick="switchTab('DC KOTA', this)">DC KOTA</button>
-    </div>
-    <div id="links-display" class="link-container"></div>
-</div>
-<div class="footer">Made in 2026 | <span class="admin-trigger" onclick="document.getElementById('login-popup').style.display='flex'">Keinox</span></div>
-
-<div id="admin-panel">
-    <div class="admin-box">
-        <h2 style="color:var(--primary);text-align:center;font-family:'Oswald';">OWNER PANEL</h2>
-        <div class="admin-nav"><button class="nav-btn active" onclick="showSet('tampilan', this)">TAMPILAN</button><button class="nav-btn" onclick="showSet('link', this)">MODS</button><button class="nav-btn" onclick="showSet('media', this)">MEDIA</button></div>
-        <div id="set-tampilan" class="set-box">
-            <input type="text" id="in-bg-url" placeholder="Background URL">
-            <input type="text" id="in-photo-url" placeholder="Profil URL">
-            <input type="text" id="in-ad-img" placeholder="Foto Iklan URL">
-            <input type="text" id="in-ad-link" placeholder="Link Iklan (http://...)">
-            <textarea id="in-help-text" placeholder="Text Bantuan (Link otomatis aktif)" rows="4"></textarea>
-            <input type="text" id="in-web-name" placeholder="Nama Web"><input type="text" id="in-web-tag" placeholder="Tagline"><input type="color" id="in-theme-color">
-            <button class="admin-btn" onclick="saveTampilan()">SIMPAN TAMPILAN</button>
-        </div>
-        <div id="set-link" class="set-box" style="display:none;">
-            <select id="mod-cat"><option value="Monetloader">Monetloader</option><option value="Cleo">Cleo</option><option value="Modpack">Modpack</option><option value="DC Kota">DC Kota</option></select>
-            <input type="text" id="mod-name" placeholder="Nama Mod"><input type="text" id="mod-img" placeholder="Foto Mod"><input type="text" id="mod-url" placeholder="Link Download"><input type="text" id="mod-pass" placeholder="Password"><textarea id="mod-desc" placeholder="Deskripsi"></textarea>
-            <button class="admin-btn" onclick="addMod()">TAMBAHKAN</button>
-            <div id="admin-mod-list" style="margin-top:10px;"></div>
-        </div>
-        <div id="set-media" class="set-box" style="display:none;">
-            <input type="text" id="in-yt" placeholder="YouTube"><input type="text" id="in-tt" placeholder="TikTok"><input type="text" id="in-dc" placeholder="Discord"><input type="text" id="in-sw" placeholder="Saweria"><button class="admin-btn" onclick="saveMedia()">UPDATE SOSMED</button>
-        </div>
-        <button class="admin-btn" style="background:#333;color:#fff;" onclick="closeModal('admin-panel')">TUTUP</button>
-    </div>
-</div>
-
-<script>
-    render();
     window.onload = function() {
-        if(!sessionStorage.getItem('counted')) { db.visitors++; save(); sessionStorage.setItem('counted', 'true'); render(); }
+        if(!sessionStorage.getItem('v')) { db.visitors++; save(); sessionStorage.setItem('v', '1'); }
+        render();
+        // LINK SHEETS ABANG
         var csv = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-WXy-au3TmKpigPhwRidm2sFr_MscMUwlJDGLDNfOv-0gmG7S4wXY866LPQkR4fvhzzfmyEeAHJdb/pub?output=csv';
-        Papa.parse('https://api.allorigins.win/raw?url=' + encodeURIComponent(csv), {
+        Papa.parse(csv, {
             download: true, header: true,
             complete: function(res) {
-                if(res.data) {
-                    sheetData = res.data.map(m => ({ name: m.Nama||m.name, url: m.Link||m.url, category: m.Category||m.category, desc: m.Deskripsi||m.desc, pass: m.Password||m.pass, img: m.Foto||m.img }));
-                    render();
-                }
-            },
-            error: function() { render(); }
+                sheetData = res.data.map(m => ({ name:m.Nama, url:m.Link, category:m.Category, img:m.Foto, desc:m.Deskripsi }));
+                render();
+            }
         });
     };
 </script>
+
+<div class="wrapper">
+    <div class="help-btn" onclick="document.getElementById('help-popup').style.display='flex'"><i class="fas fa-question-circle"></i></div>
+    <div class="profile-header">
+        <img id="main-photo" src="" class="profile-pic">
+        <h1 id="web-name"></h1>
+        <p id="web-tag"></p>
+    </div>
+    <div class="visitor-counter"><i class="fas fa-eye"></i> <span id="count-display">0</span> Visitor</div>
+    <div class="category-tab">
+        <button class="tab-btn active" onclick="switchTab('Monetloader', this)">MONET</button>
+        <button class="tab-btn" onclick="switchTab('Cleo', this)">CLEO</button>
+        <button class="tab-btn" onclick="switchTab('Modpack', this)">MODPACK</button>
+    </div>
+    <div id="links-display" class="link-container"></div>
+</div>
+
+<div id="login-popup" class="modal-overlay"><div class="modal-box"><h3>ADMIN</h3><input type="password" id="pass-in"><button class="admin-btn" onclick="checkPass()">LOGIN</button></div></div>
+<div id="help-popup" class="modal-overlay"><div class="modal-box"><h3>BANTUAN</h3><p id="help-content"></p><button class="admin-btn" onclick="closeModal('help-popup')">OKE</button></div></div>
+<div id="ad-popup" class="modal-overlay" style="display:flex;"><div class="modal-box">
+    <img id="ad-img" onclick="if(db.adLink!='#') window.open(db.adLink,'_blank')" style="width:100%; border-radius:10px; cursor:pointer;">
+    <button class="admin-btn" onclick="closeModal('ad-popup')">TUTUP IKLAN</button>
+</div></div>
+
+<div id="admin-panel">
+    <div class="admin-box">
+        <h3>OWNER SETTING</h3>
+        <input type="text" id="in-photo" placeholder="Link Foto Profil (Direct Link)">
+        <input type="text" id="in-ad-img" placeholder="Link Foto Iklan">
+        <input type="text" id="in-ad-link" placeholder="Link Klik Iklan">
+        <textarea id="in-help" placeholder="Text Bantuan"></textarea>
+        <button class="admin-btn" onclick="saveAdmin()">SIMPAN</button>
+        <button class="admin-btn" style="background:#333;color:#fff;" onclick="closeModal('admin-panel')">KELUAR</button>
+    </div>
+</div>
+
+<div class="footer">Made by <span onclick="document.getElementById('login-popup').style.display='flex'" style="color:var(--primary);cursor:pointer;">Keinox</span></div>
+
 </body>
 </html>
